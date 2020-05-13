@@ -1,4 +1,10 @@
 //Program to run a brushless motor in open loop mode
+//By Juan Pablo Angulo
+//email: juanpablocanguro@hotmail.com
+//Use a Power Stage, such as AO4606 to drive the 3 coils of your motor.
+//Can be run on a board such as https://www.ebay.com/itm/124127740844
+//Arduino forum thread: https://forum.arduino.cc/index.php?topic=672887.0
+
 const int potPin = A1;  // INPUT pot control for speed or position
 //use ports 9, 10, 11 
 const int motorPin1 =9;

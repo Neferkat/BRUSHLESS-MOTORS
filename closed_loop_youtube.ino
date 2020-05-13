@@ -1,7 +1,9 @@
 //Program to run a brushless motor in closed loop mode as a servomotor with proportional control
 //By Juan Pablo Angulo
+//email: juanpablocanguro@hotmail.com
 //Use a Power Stage, such as AO4606 to drive the 3 coils of your motor.
 //Can be run on a board such as https://www.ebay.com/itm/124127740844
+//Arduino forum thread: https://forum.arduino.cc/index.php?topic=672887.0
 
 const int K=5; // Proportional gain for position control
 const int potPin = A1;  // pot controls the RPM speed

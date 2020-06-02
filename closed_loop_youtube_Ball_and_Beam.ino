@@ -26,7 +26,7 @@ int setpointMOTOR=0; //variable for storing desired position for the MOTOR
 int error=0; //variable for calculating the error for Proportional Control
 
 //for distance sensor
-int sensorPin = A0;    // select the input pin for the potentiometer     
+int sensorPin = A0;    // select the input pin for the sensor SHARP 2Y0A21     
 double distance=0;
 int dist=0;
 

@@ -54,7 +54,6 @@ void setup() {
   TCCR2B = TCCR2B & 0b11111000 | 0x01; // set PWM frequency @ 31250 Hz for Pins 11 and 3 (3 not used)
   ICR1 = 255 ; // 8 bit resolution
  
-  pinMode(potPin, INPUT);
   pinMode(encoder, INPUT);
   pinMode(motorPin1, OUTPUT);
   pinMode(motorPin2, OUTPUT);

@@ -1,6 +1,6 @@
 //Program to run Ball and Beam with a brushless motor in closed loop mode as a servomotor with proportional control
 //By Juan Pablo Angulo
-//Use a board with Power drivers for driving the BLDC motor
+//Use a board with Power drivers for driving the BLDC motor such as: https://www.ebay.com/itm/124316900944
 
 const int K=3; // Proportional gain for MOTOR position control
 const int encoder = A1; // AMS AS5048 encoder 

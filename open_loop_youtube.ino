@@ -2,7 +2,7 @@
 //By Juan Pablo Angulo
 //email: juanpablocanguro@hotmail.com
 //Use a Power Stage, such as AO4606 to drive the 3 coils of your motor.
-//Can be run on a board such as https://www.ebay.com/itm/124127740844
+//Can be run on a board such as https://www.ebay.com/itm/124316900944
 //Arduino forum thread: https://forum.arduino.cc/index.php?topic=672887.0
 
 const int potPin = A1;  // INPUT pot control for speed or position

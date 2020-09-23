@@ -5,6 +5,7 @@
 //Can be run on a board such as https://www.ebay.com/itm/124316900944
 //Arduino forum thread: https://forum.arduino.cc/index.php?topic=672887.0
 
+
 const int K=7; // Proportional gain for position control, tune it to your liking 1-10 or more...
 
 const int encoderA = A0;  // AMS AS5048 encoder

@@ -7,7 +7,7 @@
 
 const int K=5; // Proportional gain for position control
 const int potPin = A1;  // pot controls the RPM speed
-const int encoder = A3; // AMS AS5048 encoder 
+const int encoder = A0; // AMS AS5048 encoder 
 const int motorPin1 =9; //Coil A
 const int motorPin2 =10; //Coil B
 const int motorPin3 =11; //Coil C

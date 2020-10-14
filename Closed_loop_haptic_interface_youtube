@@ -2,7 +2,7 @@
 //By Juan Pablo Angulo
 //email: juanpablocanguro@hotmail.com
 //Use a Power Stage, such as AO4606 to drive the 3 coils of your motor.
-//Can be run on a board such as https://www.ebay.com/itm/124316900944
+//Can be run on a board such as https://www.ebay.com/itm/124127740844
 //Arduino forum thread: https://forum.arduino.cc/index.php?topic=672887.0
 
 const int K=5; // Proportional gain for position control
@@ -77,6 +77,108 @@ void loop() {
  
   
   switch (option) {
+
+    case 1:
+    x1=pulseIn(encoder,HIGH); //read shaft encoder
+    epos=x1;
+    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
+    epos=constrain(epos, 0, 48*P);
+    posold=pos;  
+    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
+    diff=posold-pos;
+    diff=abs(diff);
+    if (diff>50 && posold>pos && flag==1) T++;
+    if (diff>50 && posold<pos && flag==1) T--;
+    flag=1;
+    posabs=(T*360)+pos;
+    error=posabs-setpoint4; //calculate error
+    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
+    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
+    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
+    torque=constrain(torque,0,50);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
+    if ((abs(error))<2) torque=0;
+    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
+    if ((abs(error))<3) option++;    
+  break;
+      
+  case 2:
+    x1=pulseIn(encoder,HIGH); //read shaft encoder
+    epos=x1;
+    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
+    epos=constrain(epos, 0, 48*P);
+    posold=pos;  
+    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
+    diff=posold-pos;
+    diff=abs(diff);
+    if (diff>50 && posold>pos && flag==1) T++;
+    if (diff>50 && posold<pos && flag==1) T--;
+    flag=1;
+    posabs=(T*360)+pos;
+    error=0;
+    if (posabs>150) error=posabs-150; //calculate error
+    if (posabs<-150) error=posabs+150; //calculate error
+    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
+    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
+    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
+    torque=constrain(torque,0,60);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
+    if ((abs(error))<3) torque=0;
+    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
+    //if ((abs(error))<3) option++;
+      //Serial.println(error);
+    setpoint4=posabs;
+  break;
+
+case 3:
+    x1=pulseIn(encoder,HIGH); //read shaft encoder
+    epos=x1;
+    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
+    epos=constrain(epos, 0, 48*P);
+    posold=pos;  
+    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
+    diff=posold-pos;
+    diff=abs(diff);
+    if (diff>50 && posold>pos && flag==1) T++;
+    if (diff>50 && posold<pos && flag==1) T--;
+    flag=1;
+    posabs=(T*360)+pos;
+    error=posabs-setpoint3; //calculate error
+    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
+    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
+    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
+    torque=constrain(torque,0,50);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
+    if ((abs(error))<2) torque=0;
+    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
+    if ((abs(error))<3) option++;
+    break;
+      
+  case 4:
+       //5 frame averaging digital filter for distance measurement
+    x5=x4;
+    x4=x3;
+    x3=x2;
+    x2=x1;
+    x1=pulseIn(encoder,HIGH); //read shaft encoder
+    epos=x1;//T(x5+x4+x3+x2+x1)/5;
+    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
+    epos=constrain(epos, 0, 48*P);
+    posold=pos;  
+    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
+    diff=posold-pos;
+    diff=abs(diff);
+    if (diff>50 && posold>pos && flag==1) T++;
+    if (diff>50 && posold<pos && flag==1) T--;
+    flag=1;
+    posabs=(T*360)+pos;
+   
+        //epos=47-((2*epos)%48); torque=20;
+        // epos=(epos/4)%48; torque=50;
+        /*epos=constrain(epos, 0, 48*P); //constraint the values
+        int bias=10;*/
+      //epos=((epos/2))%(48); torque=50;
+        epos=24; torque=50;
+        offset=8; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
+        setpoint3=posabs;
+      break;
 
   case 5:
     x1=pulseIn(encoder,HIGH); //read shaft encoder
@@ -175,113 +277,11 @@ void loop() {
         // epos=(epos/4)%48; torque=50;
         /*epos=constrain(epos, 0, 48*P); //constraint the values
         int bias=10;*/
-        epos=((epos/5))%(48); torque=50;
+        epos=((epos)%48);torque=20;
+        if (epos<24) epos=epos+24;
         offset=8; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
         setpoint2=posabs;
       break;
-
-case 3:
-    x1=pulseIn(encoder,HIGH); //read shaft encoder
-    epos=x1;
-    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
-    epos=constrain(epos, 0, 48*P);
-    posold=pos;  
-    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
-    diff=posold-pos;
-    diff=abs(diff);
-    if (diff>50 && posold>pos && flag==1) T++;
-    if (diff>50 && posold<pos && flag==1) T--;
-    flag=1;
-    posabs=(T*360)+pos;
-    error=posabs-setpoint3; //calculate error
-    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
-    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
-    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
-    torque=constrain(torque,0,50);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
-    if ((abs(error))<2) torque=0;
-    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
-    if ((abs(error))<3) option++;
-    break;
-      
-  case 4:
-       //5 frame averaging digital filter for distance measurement
-    x5=x4;
-    x4=x3;
-    x3=x2;
-    x2=x1;
-    x1=pulseIn(encoder,HIGH); //read shaft encoder
-    epos=x1;//T(x5+x4+x3+x2+x1)/5;
-    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
-    epos=constrain(epos, 0, 48*P);
-    posold=pos;  
-    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
-    diff=posold-pos;
-    diff=abs(diff);
-    if (diff>50 && posold>pos && flag==1) T++;
-    if (diff>50 && posold<pos && flag==1) T--;
-    flag=1;
-    posabs=(T*360)+pos;
-   
-        //epos=47-((2*epos)%48); torque=20;
-        // epos=(epos/4)%48; torque=50;
-        /*epos=constrain(epos, 0, 48*P); //constraint the values
-        int bias=10;*/
-      //epos=((epos/2))%(48); torque=50;
-        epos=24; torque=50;
-        offset=8; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
-        setpoint3=posabs;
-      break;
-
-  case 1:
-    x1=pulseIn(encoder,HIGH); //read shaft encoder
-    epos=x1;
-    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
-    epos=constrain(epos, 0, 48*P);
-    posold=pos;  
-    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
-    diff=posold-pos;
-    diff=abs(diff);
-    if (diff>50 && posold>pos && flag==1) T++;
-    if (diff>50 && posold<pos && flag==1) T--;
-    flag=1;
-    posabs=(T*360)+pos;
-    error=posabs-setpoint4; //calculate error
-    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
-    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
-    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
-    torque=constrain(torque,0,50);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
-    if ((abs(error))<2) torque=0;
-    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
-    if ((abs(error))<3) option++;    
-  break;
-      
-  case 2:
-    x1=pulseIn(encoder,HIGH); //read shaft encoder
-    epos=x1;
-    epos=map(epos,4,900,0,(48*P)); //scale shaft's encoder position range to electrical positions multiple of 48*Number of poles in motor.
-    epos=constrain(epos, 0, 48*P);
-    posold=pos;  
-    pos=map(epos,0,(48*P),0,360); //translate the electrical position to shaft position in degrees (0-359) 
-    diff=posold-pos;
-    diff=abs(diff);
-    if (diff>50 && posold>pos && flag==1) T++;
-    if (diff>50 && posold<pos && flag==1) T--;
-    flag=1;
-    posabs=(T*360)+pos;
-    error=0;
-    if (posabs>150) error=posabs-150; //calculate error
-    if (posabs<-150) error=posabs+150; //calculate error
-    if (error<0){directn=36;} //orient magnetic field vector 90 degrees ahead
-    if (error>0){directn=12;} //orient magnetic field vector 90 degrees behind 
-    torque=abs(error*K); //define the magnitude of the reaction of the motor, or the Proportional Gain. Small torque for small errors, large torque for large errors. Adjust the Value of K to better match the response you want from the motor, try 1,2,5,8,10.
-    torque=constrain(torque,0,60);    //limit maximum torque 0-100 %, you can limit the maximum torque you want the motor to have i.e. instead of 100, use 60 for 60% of the maximum torque available, motor runs slower and cooler ;) 
-    if ((abs(error))<3) torque=0;
-    offset=13; //**ADJUST THIS VALUE** OFFSET needed for Syncronization, unique to each motor as it depends on manufacturing.
-    //if ((abs(error))<3) option++;
-      //Serial.println(error);
-    setpoint4=posabs;
-  break;
-
 
   case 9:
     x1=pulseIn(encoder,HIGH); //read shaft encoder
@@ -335,10 +335,6 @@ case 3:
       setpoint5=posabs;
   break;
 
-
-
-
-  
   default:
       // statements
   break;

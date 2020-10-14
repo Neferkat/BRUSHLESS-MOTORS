@@ -27,11 +27,11 @@ int torque=0; //output torque
 int directn=0; //vector for Magnetic field orientation
 int setpoint=0; //variable for storing desired position
 int error=0; //variable for calculating the error for Proportional Control
-int flag=0;
-int T=0;
-int posabs=0;
-int posold=0;
-int diff=0;
+int flag=0; //for avoiding the first differential jump due to variable initializing in zero 
+int T=0; //this vairbale counts the complete turn of the rotor, 1 Turn=360 degrees
+int posabs=0; //absolute position value in Degrees
+int posold=0; //position value for previous iteration
+int diff=0; //variable for storing the change in position value between last iteration and latest one.
 
 void setup() {
   Serial.begin(115200);
